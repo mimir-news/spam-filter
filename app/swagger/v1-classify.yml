@@ -1,0 +1,47 @@
+Endpoint for spam classification.
+---
+parameters:
+  - name: model-type
+    in: query
+    description: Type of model to use of prediction.
+    type: string
+    enum:
+      - SVM
+      - NAIVE_BAYES
+    required: false
+    default: SVM
+  - name: spam-candidate
+    in: body
+    description: Text to classify.
+    type: object
+    properties:
+      text:
+        type: string
+    required: true
+definitions:
+  SpamResult:
+    type: "object"
+    properties:
+      text:
+        type: string
+      label:
+        type: string
+        enum:
+          - SPAM
+          - NON-SPAM
+  RequestError:
+    type: object
+    properties:
+      error:
+        type: string
+      path:
+        type: string
+responses:
+  200:
+    description: Classification result.
+    schema:
+      $ref: '#/definitions/SpamResult'
+  400:
+    description: Error response in case of invalid request.
+    schema:
+      $ref: '#/definitions/RequestError'

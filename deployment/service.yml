@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spam-filter
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: spam-filter
+  type: ClusterIP

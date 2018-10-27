@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: spam-filter
+  labels:
+    app: spam-filter
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: spam-filter
+    spec:
+      containers:
+        - name: spam-filter
+          image: eu.gcr.io/mimir-185212/spam-filter:2.2
+          ports:
+            - name: svc-port
+              containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: mimir-db
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: spamfilter
+            - name: DB_USERNAME
+              value: spamfilter
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: spamfilter.password
+            - name: CASHTAG_THRESHOLD
+              value: "0.8"
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: svc-port
+              initialDelaySeconds: 130
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: svc-port
+              initialDelaySeconds: 120

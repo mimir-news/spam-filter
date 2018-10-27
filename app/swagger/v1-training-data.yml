@@ -1,0 +1,38 @@
+Endpoint for adding training data.
+---
+parameters:
+  - name: training-data
+    in: body
+    description: New labeled training data.
+    type: object
+    properties:
+      text:
+        type: string
+      label:
+        ttype: string
+        enum:
+          - SPAM
+          - NON-SPAM
+    required: true
+definitions:
+  Success:
+    type: object
+    properties:
+      status:
+        type: string
+  RequestError:
+    type: object
+    properties:
+      error:
+        type: string
+      path:
+        type: string
+responses:
+  200:
+    description: Success response.
+    schema:
+      $ref: '#/definitions/Success'
+  400:
+    description: Error response in case of invalid request.
+    schema:
+      $ref: '#/definitions/RequestError'
