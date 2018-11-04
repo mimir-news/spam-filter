@@ -6,7 +6,9 @@ export DB_PASSWORD=password
 export CASHTAG_THRESHOLD=0.8
 export TRAIN_MODEL=FALSE
 
-VERSION=2.2
+NAME = $(shell appv name)
+IMAGE = $(shell appv image)
+VERSION = $(shell appv version)
 
 run:
 	sh start.sh
@@ -31,10 +33,13 @@ install:
 	pip install -r requirements.txt
 
 build:
-	docker build -t eu.gcr.io/mimir-185212/spam-filter:$(VERSION) .
+	docker build -t $(IMAGE) .
+
+build-test:
+	docker build -t "$(NAME)-test:$(VERSION)" -f Dockerfile.test .
 
 run-container:
-	docker run -d --name spam-filter -p 8080:8080 --network=mimir-net \
+	docker run -d --name $(NAME) -p 8080:8080 --network=mimir-net \
 		-e DB_HOST=mimir-db -e DB_PORT=5432 -e DB_NAME=spamfilter \
 		-e DB_USERNAME=spamfilter -e DB_PASSWORD=password \
-		eu.gcr.io/mimir-185212/spam-filter:$(VERSION)
+		$(IMAGE)

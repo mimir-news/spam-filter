@@ -1,0 +1,5 @@
+deployments
+Makefile
+Jenkinsfile
+.mypy_cache
+.gitignore

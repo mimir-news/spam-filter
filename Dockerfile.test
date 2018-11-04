@@ -5,14 +5,10 @@ RUN apt-get update && apt-get upgrade -y \
 # Copy app source.
 WORKDIR /app/spamfilter
 COPY . .
-RUN rm *test*
 
 # Install requirements.
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements-test.txt
 
-# Prepare environment.
-EXPOSE 8080
-EXPOSE 9191
-
-# Start command.
-CMD ["sh", "start.sh"]
+# Test command.
+CMD ["mypy", "--ignore-missing-imports", "run.py"]
