@@ -18,7 +18,6 @@ SERVICE_VERSION: str = os.getenv("SERVICE_VERSION", "2.2")
 SERVER_NAME: str = f"{SERVICE_NAME} {SERVICE_VERSION}"
 
 
-
 class AppConfig:
     SQLALCHEMY_DATABASE_URI: str = util.get_database_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False

@@ -34,19 +34,19 @@ spec:
             - name: CASHTAG_THRESHOLD
               value: "0.8"
             - name: SERVICE_NAME
-              value: spam-filter
+              value: "spam-filter"
             - name: SERVICE_VERSION
               value: "2.2"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: svc-port
-          initialDelaySeconds: 70
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: svc-port
-          initialDelaySeconds: 60
-        imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: svc-port
+            initialDelaySeconds: 70
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: svc-port
+            initialDelaySeconds: 60
+          imagePullPolicy: Always
       imagePullSecrets:
         - name: gcr-json-key

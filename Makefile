@@ -42,4 +42,5 @@ run-container:
 	docker run -d --name $(NAME) -p 8080:8080 --network=mimir-net \
 		-e DB_HOST=mimir-db -e DB_PORT=5432 -e DB_NAME=spamfilter \
 		-e DB_USERNAME=spamfilter -e DB_PASSWORD=password \
+		-e SERVICE_NAME=$(NAME) -e SERVICE_VERSION=$(VERSION) \
 		$(IMAGE)
