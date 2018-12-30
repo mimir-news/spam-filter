@@ -12,27 +12,31 @@ spec:
         app: spam-filter
     spec:
       containers:
-      - name: spam-filter
-        image: eu.gcr.io/mimir-185212/spam-filter:2.2
-        ports:
-        - name: svc-port
-          containerPort: 8080
-        env:
-        - name: DB_HOST
-          value: mimir-db
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_NAME
-          value: spamfilter
-        - name: DB_USERNAME
-          value: spamfilter
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: spamfilter.password
-        - name: CASHTAG_THRESHOLD
-          value: "0.8"
+        - name: spam-filter
+          image: eu.gcr.io/mimir-185212/spam-filter:2.2
+          ports:
+            - name: svc-port
+              containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: mimir-db
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: spamfilter
+            - name: DB_USERNAME
+              value: spamfilter
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: spamfilter.password
+            - name: CASHTAG_THRESHOLD
+              value: "0.8"
+            - name: SERVICE_NAME
+              value: spam-filter
+            - name: SERVICE_VERSION
+              value: "2.2"
         livenessProbe:
           httpGet:
             path: /health
@@ -45,4 +49,4 @@ spec:
           initialDelaySeconds: 60
         imagePullPolicy: Always
       imagePullSecrets:
-      - name: gcr-json-key
+        - name: gcr-json-key

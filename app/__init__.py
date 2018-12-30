@@ -12,8 +12,9 @@ from flasgger import Swagger
 
 # Internal modules
 from app.config import AppConfig, REQUEST_ID_HEADER
+from app.config import REQUEST_ID_HEADER, SERVER_NAME
 
-app = Flask('Mimir Spam Filter')
+app = Flask(SERVER_NAME)
 app.config.from_object(AppConfig)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -42,6 +43,7 @@ def add_request_id_to_response(response: flask.Response) -> flask.Response:
     :return: Response with header.
     """
     response.headers[REQUEST_ID_HEADER] = request.id
+    response.headers["Server"] = SERVER_NAME
     return response
 
 
