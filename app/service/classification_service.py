@@ -45,6 +45,8 @@ class ClassifcationService:
         :return: Boolean.
         """
         words = text.split()
+        if not words:
+            return True 
         cashtags = [word for word in words if word.startswith('$')]
         return (len(cashtags) / len(words)) > CASHTAG_THRESHOLD
 
