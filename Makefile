@@ -4,6 +4,7 @@ export DB_NAME=spamfilter
 export DB_USERNAME=spamfilter
 export DB_PASSWORD=password
 export CASHTAG_THRESHOLD=0.8
+export RESULT_SAMPLE_RATE=0.5
 export TRAIN_MODEL=FALSE
 
 NAME = $(shell appv name)

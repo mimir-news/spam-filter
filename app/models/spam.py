@@ -9,27 +9,32 @@ from app import db
 
 
 class Label(Enum):
-    SPAM = 'SPAM'
-    NON_SPAM = 'NON-SPAM'
+    SPAM = "SPAM"
+    NON_SPAM = "NON-SPAM"
 
 
 class SpamLabel(db.Model):  # type: ignore
     label: str = db.Column(db.String(10), primary_key=True)
-    created_at: datetime = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    created_at: datetime = db.Column(
+        db.DateTime, default=datetime.utcnow, nullable=False
+    )
 
     def __repr__(self) -> str:
-        return f'SpamLabel(label={self.label} created_at={self.created_at})'
+        return f"SpamLabel(label={self.label} created_at={self.created_at})"
 
 
 class TrainingData(db.Model):  # type: ignore
     id: int = db.Column(db.Integer, primary_key=True)
     text: str = db.Column(db.String(500))
-    label: str = db.Column(db.String(50), db.ForeignKey('spam_label.label'))
-    created_at: datetime = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    label: str = db.Column(db.String(50), db.ForeignKey("spam_label.label"))
+    created_at: datetime = db.Column(
+        db.DateTime, default=datetime.utcnow, nullable=False
+    )
 
     def __repr__(self) -> str:
-        return 'TrainingData(id={} text={} label={} created_at={})'.\
-            format(self.id, self.text, self.label, self.created_at)
+        return "TrainingData(id={} text={} label={} created_at={})".format(
+            self.id, self.text, self.label, self.created_at
+        )
 
 
 class SpamCandidate:
@@ -37,21 +42,35 @@ class SpamCandidate:
         self.text = format_text(text)
         self.label = label
 
-    def to_dict(self) -> Dict[str, Optional[str]]:
-        return {
-            'text': self.text,
-            'label': self.label
-        }
+    def todict(self) -> Dict[str, Optional[str]]:
+        return {"text": self.text, "label": self.label}
 
-    @staticmethod
-    def from_dict(raw_dict):
-        return SpamCandidate(
-            text=raw_dict['text'],
-            label=raw_dict['label'] if 'label' in raw_dict else None)
+    @classmethod
+    def fromdict(cls, raw) -> "SpamCandidate":
+        return cls(text=raw["text"], label=raw["label"] if "label" in raw else None)
+
+
+class ResultSample(db.Model):  # type: ignore
+    id: int = db.Column(db.Integer, primary_key=True)
+    text: str = db.Column(db.String(500))
+    label: str = db.Column(db.String(50))
+    is_confirmed: bool = db.Column(db.Boolean, default=False)
+    created_at: datetime = db.Column(
+        db.DateTime, default=datetime.utcnow, nullable=False
+    )
+
+    @classmethod
+    def from_candidate(cls, candidate: SpamCandidate) -> "ResultSample":
+        return cls(text=candidate.text, label=candidate.label)
+
+    def __repr__(self) -> str:
+        return "ResultSample(id={} text={} label={} is_confirmed={} created_at={})".format(
+            self.id, self.text, self.label, self.is_confirmed, self.created_at
+        )
 
 
 # Regex for identifiying URLs.
-_URL_PATTERN = re.compile(r'(https?|ftp):\/\/[\.[a-zA-Z0-9\/\-]+')
+_URL_PATTERN = re.compile(r"(https?|ftp):\/\/[\.[a-zA-Z0-9\/\-]+")
 
 
 def format_text(original: str) -> str:
@@ -60,4 +79,4 @@ def format_text(original: str) -> str:
     :param original: String to format.
     :return: Formated string.
     """
-    return _URL_PATTERN.sub('', original).replace('  ', ' ').strip().lower()
+    return _URL_PATTERN.sub("", original).replace("  ", " ").strip().lower()

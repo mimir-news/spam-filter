@@ -4,3 +4,4 @@ from .spam import Label
 from .spam import SpamCandidate
 from .spam import SpamLabel
 from .spam import TrainingData
+from .spam import ResultSample

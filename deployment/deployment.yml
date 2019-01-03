@@ -5,7 +5,7 @@ metadata:
   labels:
     app: spam-filter
 spec:
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: spam-filter
-          image: eu.gcr.io/mimir-185212/spam-filter:2.2
+          image: eu.gcr.io/mimir-185212/spam-filter:2.3
           ports:
             - name: svc-port
               containerPort: 8080
@@ -33,6 +33,8 @@ spec:
                   key: spamfilter.password
             - name: CASHTAG_THRESHOLD
               value: "0.8"
+            - name: RESULT_SAMPLE_RATE
+              value: "0.05"
             - name: SERVICE_NAME
               value: "spam-filter"
             - name: SERVICE_VERSION

@@ -25,11 +25,11 @@ class RequestError(Exception):
 
     def asdict(self) -> Dict[str, Any]:
         return {
-            'errorId': self.id,
-            'status': self.status(),
-            'message': self.message,
-            'path': request.path,
-            'requestId': request.id
+            "errorId": self.id,
+            "status": self.status(),
+            "message": self.message,
+            "path": request.path,
+            "requestId": request.id,
         }
 
     def status(self) -> int:
@@ -41,6 +41,7 @@ class BadRequestError(RequestError):
 
     message: Error message as a string.
     """
+
     def status(self) -> int:
         return status.HTTP_400_BAD_REQUEST
 
@@ -50,6 +51,7 @@ class ConflictError(RequestError):
 
     message: Error message as a string.
     """
+
     def status(self) -> int:
         return status.HTTP_409_CONFLICT
 
@@ -59,6 +61,7 @@ class NotFoundError(RequestError):
 
     message: Error message as a string.
     """
+
     def status(self) -> int:
         return status.HTTP_404_NOT_FOUND
 
@@ -68,7 +71,8 @@ class InternalServerError(RequestError):
 
     message: Error message as a string.
     """
-    def __init__(self, message='Internal error'):
+
+    def __init__(self, message="Internal error"):
         super().__init__(message)
 
 
@@ -78,8 +82,9 @@ class NotImplementedError(RequestError):
 
     message: Error message as a string.
     """
+
     def __init__(self) -> None:
-        super().__init__('Not implemented')
+        super().__init__("Not implemented")
 
     def status(self) -> int:
         return status.HTTP_501_NOT_IMPLEMENTED
