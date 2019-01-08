@@ -22,17 +22,19 @@ definitions:
   SpamResult:
     type: "object"
     properties:
-      text:
-        type: string
       label:
         type: string
         enum:
           - SPAM
           - NON-SPAM
+      reason:
+        type: string
   RequestError:
     type: object
     properties:
-      error:
+      errorId:
+        type: string
+      message:
         type: string
       path:
         type: string

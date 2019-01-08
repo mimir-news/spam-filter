@@ -17,7 +17,7 @@ class RequestError(Exception):
     """
 
     def __init__(self, message: str) -> None:
-        self.id = str(uuid4())
+        self.id = str(uuid4()).lower()
         self.message = message
 
     def __str__(self) -> str:

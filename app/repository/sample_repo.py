@@ -6,7 +6,7 @@ from random import random
 # Internal modules
 from app import db
 from app.config import RESULT_SAMPLE_RATE
-from app.models import SpamCandidate, ResultSample
+from app.models import SpamResult, ResultSample
 
 
 class SampleRepo:
@@ -19,13 +19,14 @@ class SampleRepo:
             self._log.error(f"Sample rate is {self._sample_rate}. Max is 1.0")
             sys.exit(1)
 
-    def save(self, candidate: SpamCandidate) -> None:
+    def save(self, res: SpamResult, text: str) -> None:
         """Optionaly adds a classified sample derived from a candidate.
 
-        :param candidate: SpamCandidate to convert.
+        :param res: SpamResult to convert.
+        :param text: Classified text.
         """
         if self._should_sample():
-            sample = ResultSample.from_candidate(candidate)
+            sample = ResultSample.from_result(res, text)
             db.session.add(sample)
             db.session.commit()
 

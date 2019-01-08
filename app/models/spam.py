@@ -1,5 +1,6 @@
 # Standard library
 import re
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from typing import Dict, Optional
@@ -50,10 +51,20 @@ class SpamCandidate:
         return cls(text=raw["text"], label=raw["label"] if "label" in raw else None)
 
 
+@dataclass(frozen=True)
+class SpamResult:
+    label: str
+    reason: str
+
+    def todict(self) -> Dict[str, str]:
+        return {"label": self.label, "reason": self.reason}
+
+
 class ResultSample(db.Model):  # type: ignore
     id: int = db.Column(db.Integer, primary_key=True)
     text: str = db.Column(db.String(500))
     label: str = db.Column(db.String(50))
+    reason: str = db.Column(db.String(50))
     is_confirmed: bool = db.Column(db.Boolean, default=False)
     created_at: datetime = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False
@@ -63,9 +74,18 @@ class ResultSample(db.Model):  # type: ignore
     def from_candidate(cls, candidate: SpamCandidate) -> "ResultSample":
         return cls(text=candidate.text, label=candidate.label)
 
+    @classmethod
+    def from_result(cls, res: SpamResult, text: str) -> "ResultSample":
+        return cls(text=text, label=res.label, reason=res.reason)
+
     def __repr__(self) -> str:
-        return "ResultSample(id={} text={} label={} is_confirmed={} created_at={})".format(
-            self.id, self.text, self.label, self.is_confirmed, self.created_at
+        return "ResultSample(id={} text={} label={} reason={} is_confirmed={} created_at={})".format(
+            self.id,
+            self.text,
+            self.label,
+            self.reason,
+            self.is_confirmed,
+            self.created_at,
         )
 
 

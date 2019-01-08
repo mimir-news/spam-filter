@@ -6,26 +6,32 @@ from sklearn.pipeline import Pipeline
 
 # Internal modules
 from app.config import CASHTAG_THRESHOLD
-from app.models import Label, ModelType
+from app.models import Label, ModelType, SpamResult
 from app.repository import ModelRepo
 from .training_service import dummy_pipeline
+
+
+_TOO_MANY_CASHTAGS = "too many cashtags"
 
 
 class ClassifcationService:
     def __init__(self, model_repo: Optional[ModelRepo]) -> None:
         self._repo = self._get_model_repo(model_repo)
 
-    def classify(self, text: str, model_type: ModelType = ModelType.SVM) -> str:
+    def classify(self, text: str, model_type: ModelType = ModelType.SVM) -> SpamResult:
         """Classifes a spam candidate.
 
         :param text: Text to check for indications of spam.
         :param model_type: ModelType to use for classification.
-        :return: Label for the tested text.
+        :return: SpamResult for the tested text.
         """
         if self._to_many_cashtags(text):
-            return Label.SPAM.value
+            return SpamResult(label=Label.SPAM.value, reason="too many cashtags")
         model = self._repo.get_spam_classifier(model_type)
-        return model.predict([text])[0]
+        return SpamResult(
+            label=model.predict([text])[0],
+            reason=f"predicted by {model_type.value} model",
+        )
 
     def has_model(self) -> bool:
         """Checks if the services has a trained model.

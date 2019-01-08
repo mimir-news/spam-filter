@@ -25,15 +25,16 @@ swagger = Swagger(app)
 from app import routes, models
 from app.controllers import errors
 
-
-error_log = logging.getLogger('ErrorHandler')
+_log = logging.getLogger("RequestLogger")
+error_log = logging.getLogger("ErrorHandler")
 
 
 @app.before_request
 def add_request_id() -> None:
     """Adds a request id to an incomming request."""
     incomming_id: Optional[str] = request.headers.get(REQUEST_ID_HEADER)
-    request.id = incomming_id if incomming_id != None else str(uuid4())
+    request.id = incomming_id if incomming_id != None else str(uuid4()).lower()
+    _log.info(f"Incomming request {request.method} {request.path} id=[{request.id}]")
 
 
 @app.after_request
